@@ -1,6 +1,5 @@
 ./obj/local/arm64-v8a/objs/main.out/main.o: main.cpp \
-  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\iostream \
-  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_prolog.h \
+  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdio.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cprolog.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/config/features.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_stlport_version.h \
@@ -12,6 +11,11 @@
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/config/_gcc.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/config/stl_confix.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/config/_native_headers.h \
+  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_epilog.h \
+  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_config_compat_post.h \
+  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdlib.h \
+  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\iostream \
+  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_prolog.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/debug/_debug.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_ioserr.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_iosfwd.h \
@@ -30,7 +34,6 @@
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\../../gabi++/include/exception \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl//gabi++/include/gabixx_config.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cstdio.h \
-  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdio.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_iterator_base.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_ptrs_specialize.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/type_traits.h \
@@ -46,7 +49,6 @@
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_pair.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_locale.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cstdlib.h \
-  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdlib.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cmath.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\math.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_threads.h \
@@ -94,14 +96,9 @@
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_istream.c \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_num_get.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_num_get.c \
-  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_epilog.h \
-  C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_config_compat_post.h \
-  ../tools\tools.h \
   C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\errno.h
 
-C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\iostream:
-
-C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_prolog.h:
+C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdio.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cprolog.h:
 
@@ -124,6 +121,16 @@ C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/s
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/config/stl_confix.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/config/_native_headers.h:
+
+C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_epilog.h:
+
+C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_config_compat_post.h:
+
+C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdlib.h:
+
+C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\iostream:
+
+C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_prolog.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/debug/_debug.h:
 
@@ -161,8 +168,6 @@ C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl//
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cstdio.h:
 
-C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdio.h:
-
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_iterator_base.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_ptrs_specialize.h:
@@ -192,8 +197,6 @@ C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/s
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_locale.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cstdlib.h:
-
-C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stdlib.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_cmath.h:
 
@@ -288,11 +291,5 @@ C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/s
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_num_get.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_num_get.c:
-
-C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_epilog.h:
-
-C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\stl/_config_compat_post.h:
-
-../tools\tools.h:
 
 C:/Users/Andrew/AppData/Local/Android/Sdk/ndk-bundle/build//../sources/cxx-stl/stlport/stlport\errno.h:
