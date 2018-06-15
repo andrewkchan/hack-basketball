@@ -29,12 +29,15 @@
 #define REGION_ITERATOR_WRITE   (1UL << 2)
 #define REGION_ITERATOR_EXECUTE (1UL << 3)
 
+struct watch_addr {
+  uintptr_t addr;
+  int prev;
+};
+
 struct watchlist {
-  int count;
-  struct {
-    uintptr_t addr;
-    int prev;
-  } *list;
+  size_t count;
+  size_t size;
+  struct watch_addr *list;
 };
 
 struct region_iterator {
@@ -150,66 +153,72 @@ static int write_memory(pid_t pid, uintptr_t addr, void *buf, size_t bufsize) {
   return result;
 }
 
-void watchlist_clear(struct watchlist *wl) {
-  // noop
+static void watchlist_push(struct watchlist *wl, uintptr_t addr, int val) {
+  // pushes the given address onto the watchlist and marks its previous value as val
+  if (wl->count == wl->size) {
+    wl->size *= 2;
+    wl->list = (struct watch_addr *)realloc(wl->list, wl->size * sizeof(int));
+  }
+  wl->list[wl->count].addr = addr;
+  wl->list[wl->count].prev = val;
+  wl->count++;
 }
 
-static int scan(struct watchlist *wl, pid_t pid, uintptr_t addr, int val) {
-  size_t val_size = sizeof(int);
+static void watchlist_init(struct watchlist *wl) {
+  wl->size = 4096;
+  wl->count = 0;
+  wl->list = (struct watch_addr *)malloc(wl->size * sizeof(int));
+}
+
+static void watchlist_clear(struct watchlist *wl) {
+  wl->count = 0;
+}
+
+static void watchlist_free(struct watchlist *wl) {
+  free(wl->list);
+  wl->list = NULL;
+}
+
+static int scan(struct watchlist *wl, pid_t pid, int val) {
+  size_t INT_SIZE = sizeof(int);
   // clear the watchlist
   watchlist_clear(wl);
-
-
+  struct region_iterator it[1];
+  // begin reading off process maps
+  region_iterator_init(it, pid);
+  for (; !region_iterator_done(it); region_iterator_next(it)) {
+    // read the next contiguous region of memory into buf
+    const char *buf = (const char *)region_iterator_readmem(it);
+    if (buf) {
+      // check every value-aligned block of buffer
+      size_t count = it->size / INT_SIZE;
+      int *read = (int *)buf;
+      for (size_t i= 0; i < count; i++) {
+        // does this particular block == desired value?
+        if (*read == val) {
+          // if it matches, add the block address (in remote addr space) to watchlist
+          uintptr_t addr = it->base + i*INT_SIZE;
+          watchlist_push(wl, addr, val);
+        }
+        read++; // next block
+      }
+    } else {
+      std::cout << "memory read failed at "
+        << it->base << " with error "
+        << strerror(errno) << std::endl;
+    }
+  }
+  region_iterator_destroy(it);
   return 1;
 }
 
 int main() {
-  pid_t pid     = 5136; //The process id you wish to attach to
-  uintptr_t addr = 0x13371337; //The address you wish to read in the process
+  pid_t pid     = 21827; //The process id you wish to attach to
 
+  struct watchlist wl;
+  watchlist_init(&wl);
+  scan(&wl, pid, 3);
+  std::cout << wl.count << " addresses found with value 3" << std::endl;
 
-  std::cout << "Attaching to process 5136" << std::endl;
-  //First, attach to the process
-  //All ptrace() operations that fail return -1, the exceptions are
-  //PTRACE_PEEK* operations
-  if (ptrace(PTRACE_ATTACH, pid, NULL, NULL) == -1) {
-    //Read the value of errno for details.
-    //To get a human readable, call strerror()
-    //strerror(errno) <-- Returns a human readable version of the
-    //error that occurred
-    std::cout << "Error running ptrace()" << std::endl;
-    std::cout << strerror(errno) << std::endl;
-    return 0;
-  }
-
-  //Now, attaching doesn't mean we can read the value straight away
-  //We have to wait for the process to stop
-  int status;
-  //waitpid() returns -1 on failure
-  //W.I.F, not W.T.F
-  //WIFSTOPPED() returns true if the process was stopped when we attached to it
-  if (waitpid(pid, &status, 0) == -1 || !WIFSTOPPED(status)) {
-    //Failed, read the value of errno or strerror(errno)
-    std::cout << "waitpid failed or process is not stopped" << std::endl;
-    std::cout << strerror(errno) << std::endl;
-    return 0;
-  }
-
-  errno = 0; //Set errno to zero
-  //We are about to perform a PTRACE_PEEK* operation, it is possible that the value
-  //we read at the address is -1, if so, ptrace() will return -1 EVEN THOUGH it succeeded!
-  //This is why we need to 'clear' the value of errno.
-  int value = ptrace(PTRACE_PEEKDATA, pid, (void*)addr, NULL);
-  if (value == -1 && errno != 0) {
-    //Failed, read the value of errno or strerror(errno)
-    return 0;
-  } else {
-    //Success! Read the value
-    std::cout << "Success!" << std::endl;
-    std::cout << value << std::endl;
-  }
-
-  //Now, we have to detach from the process
-  ptrace(PTRACE_DETACH, pid, NULL, NULL);
   return 0;
 }
