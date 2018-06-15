@@ -213,12 +213,27 @@ static int scan(struct watchlist *wl, pid_t pid, int val) {
 }
 
 int main() {
-  pid_t pid     = 21827; //The process id you wish to attach to
-
+  pid_t pid     = 10580; //The process id you wish to attach to
   struct watchlist wl;
   watchlist_init(&wl);
-  scan(&wl, pid, 3);
-  std::cout << wl.count << " addresses found with value 3" << std::endl;
+
+  char cmd[4096];
+  const char *delim = " \n\t";
+  std::cout << "Enter a command (s [VAL] - search for VAL, f [VAL] - filter for VAL):";
+  while (fgets(cmd, sizeof(cmd), stdin)) {
+    char *verb = strtok(cmd, delim);
+    if (verb) {
+      char *val_str = strtok(NULL, delim);
+      if (strcmp(verb, "q") == 0)
+        break;
+      int val = (int) strtoimax(val_str, NULL, 10);
+
+      std::cout << "Scanning for value " << val << std::endl;
+      scan(&wl, pid, val);
+      std::cout << wl.count << " addresses found with value " << val << std::endl;
+      std::cout << "Enter a command (s [VAL] - search for VAL, f [VAL] - filter for VAL):";
+    }
+  }
 
   return 0;
 }
