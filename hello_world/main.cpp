@@ -35,9 +35,9 @@ struct watch_addr {
 };
 
 struct watchlist {
-  size_t count;
-  size_t size;
-  struct watch_addr *list;
+  size_t count; // number of addresses being watched
+  size_t size; // capacity of the list (how many addresses it can hold)
+  struct watch_addr *list; // list of addresses being watched
 };
 
 struct region_iterator {
@@ -184,7 +184,7 @@ static int scan(struct watchlist *wl, pid_t pid, int val) {
   // clear the watchlist
   watchlist_clear(wl);
   struct region_iterator it[1];
-  // begin reading off process maps
+  // begin reading off process maps and mem
   region_iterator_init(it, pid);
   for (; !region_iterator_done(it); region_iterator_next(it)) {
     // read the next contiguous region of memory into buf
@@ -193,14 +193,13 @@ static int scan(struct watchlist *wl, pid_t pid, int val) {
       // check every value-aligned block of buffer
       size_t count = it->size / INT_SIZE;
       int *read = (int *)buf;
-      for (size_t i= 0; i < count; i++) {
+      for (size_t i= 0; i < count; i++, read++) {
         // does this particular block == desired value?
         if (*read == val) {
           // if it matches, add the block address (in remote addr space) to watchlist
           uintptr_t addr = it->base + i*INT_SIZE;
           watchlist_push(wl, addr, val);
         }
-        read++; // next block
       }
     } else {
       std::cout << "memory read failed at "
@@ -212,8 +211,87 @@ static int scan(struct watchlist *wl, pid_t pid, int val) {
   return 1;
 }
 
+static void filter(struct watchlist* wl, pid_t pid, int val) {
+  // filters an existing watchlist, keeping only addresses that == val
+  // create an empty watchlist to push filtered addresses to
+  struct watchlist out[1];
+  watchlist_init(out);
+
+  struct region_iterator it[1];
+  // begin reading off process maps and mem
+  region_iterator_init(it, pid);
+  int j = 0; // index of the watchlist address we are visiting
+  for(; !region_iterator_done(it); region_iterator_next(it)) {
+    // read the next contiguous region of memory into buf
+    const char *buf = (const char *)region_iterator_readmem(it);
+    if (buf) {
+      // visit all watchlist addresses inside this region of memory
+      uintptr_t base = it->base;
+      uintptr_t tail = base + it->size;
+      // if the current watchlist address is < the current region's start address,
+      // then the region the address is in must have been de-allocated sometime
+      // after the previous call to scan(...) or narrow(...)
+      // hence, skip to the next valid watchlist address
+      while (j < wl->count && wl->list[j].addr < base) {
+        j++;
+      }
+      // visit every watchlist address inside this region
+      while (j < wl->count && wl->list[j].addr >= base && wl->list[j].addr < tail) {
+        uintptr_t addr = wl->list[j].addr;
+        int *read = (int *)(buf + addr - base);
+        if (*read == val) {
+          watchlist_push(out, addr, val);
+        }
+        j++;
+      }
+    } else {
+      std::cout << "memory read failed at "
+        << it->base << " with error "
+        << strerror(errno) << std::endl;
+    }
+  }
+
+  watchlist_free(wl);
+  *wl = *out; // set the fields of wl equal to out
+}
+
+static void put(struct watchlist* wl, pid_t pid, int val) {
+  // puts a given value to all valid addresses in a watchlist
+
+  struct region_iterator it[1];
+  // begin reading off process maps and mem
+  region_iterator_init(it, pid);
+  int j = 0; // index of the watchlist address we are visiting
+  for(; !region_iterator_done(it); region_iterator_next(it)) {
+    // read the next contiguous region of memory into buf
+    const char *buf = (const char *)region_iterator_readmem(it);
+    if (buf) {
+      // visit all watchlist addresses inside this region of memory
+      uintptr_t base = it->base;
+      uintptr_t tail = base + it->size;
+      // if the current watchlist address is < the current region's start address,
+      // then the region the address is in must have been de-allocated sometime
+      // after the previous call to scan(...) or narrow(...)
+      // hence, skip to the next valid watchlist address
+      while (j < wl->count && wl->list[j].addr < base) {
+        j++;
+      }
+      // visit every watchlist address inside this region
+      while (j < wl->count && wl->list[j].addr >= base && wl->list[j].addr < tail) {
+        uintptr_t addr = wl->list[j].addr;
+        write_memory(pid, addr, &val, sizeof(int));
+        j++;
+      }
+    } else {
+      std::cout << "memory read failed at "
+        << it->base << " with error "
+        << strerror(errno) << std::endl;
+    }
+  }
+}
+
 int main() {
-  pid_t pid     = 10580; //The process id you wish to attach to
+  pid_t pid     = 15406; //The process id you wish to attach to
   struct watchlist wl;
   watchlist_init(&wl);
 
@@ -228,9 +306,22 @@ int main() {
         break;
       int val = (int) strtoimax(val_str, NULL, 10);
 
-      std::cout << "Scanning for value " << val << std::endl;
-      scan(&wl, pid, val);
-      std::cout << wl.count << " addresses found with value " << val << std::endl;
+      if (strcmp(verb, "q") == 0) {
+        break;
+      } else if (strcmp(verb, "s") == 0) {
+        std::cout << "Scanning for value " << val << std::endl;
+        scan(&wl, pid, val);
+        std::cout << wl.count << " addresses found with value " << val << std::endl;
+      } else if (strcmp(verb, "f") == 0) {
+        std::cout << "Filtering for value " << val << std::endl;
+        filter(&wl, pid, val);
+        std::cout << wl.count << " addresses filtered with value " << val << std::endl;
+      } else if (strcmp(verb, "p") == 0) {
+        std::cout << "Putting value " << val << std::endl;
+        put(&wl, pid, val);
+        std::cout << wl.count << " addresses changed to value " << val << std::endl;
+      }
+
       std::cout << "Enter a command (s [VAL] - search for VAL, f [VAL] - filter for VAL):";
     }
   }
